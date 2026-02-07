@@ -1,0 +1,208 @@
+function selectColors():
+    loop all players:
+        if script "eventcore.sk" is loaded:
+            if {server::hosts::*} doesn't contain loop-player's uuid:
+                if {au::%loop-player's uuid%::color} is not set:
+                    set {_inv} to a new chest inventory with 5 rows named "Pick your color"
+
+                    if {au::picked colors::*} doesn't contain "red":
+                        set slot 0 of {_inv} to red wool named "&4Red"
+                    else:
+                        set slot 0 of {_inv} to barrier named "&4Red (picked)"
+
+                    if {au::picked colors::*} doesn't contain "blue":
+                        set slot 1 of {_inv} to blue wool named "&9Blue"
+                    else:
+                        set slot 1 of {_inv} to barrier named "&9Blue (picked)"
+
+                    if {au::picked colors::*} doesn't contain "green":
+                        set slot 2 of {_inv} to green wool named "&2Green"
+                    else:
+                        set slot 2 of {_inv} to barrier named "&2Green (picked)"
+
+                    if {au::picked colors::*} doesn't contain "yellow":
+                        set slot 3 of {_inv} to yellow wool named "&eYellow"
+                    else:
+                        set slot 3 of {_inv} to barrier named "&eYellow (picked)"
+
+                    if {au::picked colors::*} doesn't contain "purple":
+                        set slot 4 of {_inv} to purple wool named "&5Purple"
+                    else:
+                        set slot 4 of {_inv} to barrier named "&5Purple (picked)"
+
+                    if {au::picked colors::*} doesn't contain "orange":
+                        set slot 5 of {_inv} to orange wool named "&6Orange"
+                    else:
+                        set slot 5 of {_inv} to barrier named "&6Orange (picked)"
+
+                    if {au::picked colors::*} doesn't contain "cyan":
+                        set slot 6 of {_inv} to light blue wool named "&bCyan"
+                    else:
+                        set slot 6 of {_inv} to barrier named "&bCyan (picked)"
+
+                    if {au::picked colors::*} doesn't contain "pink":
+                        set slot 7 of {_inv} to pink wool named "&dPink"
+                    else:
+                        set slot 7 of {_inv} to barrier named "&dPink (picked)"
+                    open {_inv} to loop-player
+        else:
+            if {au::%loop-player's uuid%::color} is not set:
+                set {_inv} to a new chest inventory with 5 rows named "Pick your color"
+
+                if {au::picked colors::*} doesn't contain "red":
+                    set slot 0 of {_inv} to red wool named "&4Red"
+                else:
+                    set slot 0 of {_inv} to barrier named "&4Red (picked)"
+
+                if {au::picked colors::*} doesn't contain "blue":
+                    set slot 1 of {_inv} to blue wool named "&9Blue"
+                else:
+                    set slot 1 of {_inv} to barrier named "&9Blue (picked)"
+
+                if {au::picked colors::*} doesn't contain "green":
+                    set slot 2 of {_inv} to green wool named "&2Green"
+                else:
+                    set slot 2 of {_inv} to barrier named "&2Green (picked)"
+
+                if {au::picked colors::*} doesn't contain "yellow":
+                    set slot 3 of {_inv} to yellow wool named "&eYellow"
+                else:
+                    set slot 3 of {_inv} to barrier named "&eYellow (picked)"
+
+                if {au::picked colors::*} doesn't contain "purple":
+                    set slot 4 of {_inv} to purple wool named "&5Purple"
+                else:
+                    set slot 4 of {_inv} to barrier named "&5Purple (picked)"
+
+                if {au::picked colors::*} doesn't contain "orange":
+                    set slot 5 of {_inv} to orange wool named "&6Orange"
+                else:
+                    set slot 5 of {_inv} to barrier named "&6Orange (picked)"
+
+                if {au::picked colors::*} doesn't contain "cyan":
+                    set slot 6 of {_inv} to light blue wool named "&bCyan"
+                else:
+                    set slot 6 of {_inv} to barrier named "&bCyan (picked)"
+
+                if {au::picked colors::*} doesn't contain "pink":
+                    set slot 7 of {_inv} to pink wool named "&dPink"
+                else:
+                    set slot 7 of {_inv} to barrier named "&dPink (picked)"
+                open {_inv} to loop-player
+                        
+                            
+
+command /au [<text>] [<text>]:
+    description: Among Us..
+    usage: /au [settings|start|end|setmap] [<map>]
+    aliases: /amongus
+    trigger:
+        set {_arg} to arg-1
+        set {_arg2} to arg-2
+        if {_arg} is set:
+            set {_arg} to lowercase {_arg}
+
+        if {_arg} is "settings":
+            # Settings
+        else if {_arg} isn't set:
+            # Settings
+        else if {_arg} is "start":
+            broadcast "&4Among Us &2Is Starting in &e30 seconds!"
+            selectColors()
+            wait 15 seconds
+            broadcast "&4Among Us &2Is Starting in &e15 seconds!"
+            wait 5 seconds
+            broadcast "&4Among Us &2Is Starting in &e10 seconds!"
+            set {_i} to 10
+            loop 9 times:
+                wait 1 seconds
+                remove 1 from {_i}
+                broadcast "&4Among Us &2Is Starting in &e%{_i}% seconds!"
+            broadcast "&4Among Us &2Is Starting in &eNOW!"
+            if {_arg2} is set:
+                set {au::active map::name} to {au::maps::%{_arg2}%::name}
+                set {au::active map::spawn} to {au::maps::%{_arg2}%::spawn}
+            else:
+                set {_map} to a random element out of {au::maps::*}
+                set {au::active map::name} to {au::maps::%{_map}%::name}
+                set {au::active map::spawn} to {au::maps::%{_map}%::spawn}
+            teleport all players to {au::active map::spawn}
+            send "&2Selected map: &e%{au::active map::name}%"
+
+        else if {_arg} is "end":
+            loop all offlineplayers:
+                delete {au::%uuid of loop-offlineplayer%::color}
+                delete {au::picked colors::*}
+            delete {au::active map::name}
+            delete {au::active map::spawn}
+            send "&2Game has been reset!"
+        else if {_arg} is "setmap":
+            if {_arg2} is set:
+                set {au::maps::%{_arg2}%::name} to {_arg2}
+                set {au::maps::%{_arg2}%::spawn} to the player's location
+                send "&2Initialized map:&e %{au::maps::%{_arg2}%::name}%!"
+
+
+on inventory click:
+    if name of event-inventory is "Pick your color":
+        cancel event
+        if event-item is red wool:
+            set {au::%uuid of player%::color} to "red"
+            if {au::picked colors::*} doesn't contain "red":
+                add "red" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+ 
+        if event-item is blue wool:
+            set {au::%uuid of player%::color} to "blue"
+            if {au::picked colors::*} doesn't contain "blue":
+                add "blue" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+        if event-item is green wool:
+            set {au::%uuid of player%::color} to "green"
+            if {au::picked colors::*} doesn't contain "green":
+                add "green" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+        if event-item is yellow wool:
+            set {au::%uuid of player%::color} to "yellow"
+            if {au::picked colors::*} doesn't contain "yellow":
+                add "yellow" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+        if event-item is purple wool:
+            set {au::%uuid of player%::color} to "purple"
+            if {au::picked colors::*} doesn't contain "purple":
+                add "purple" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+        if event-item is orange wool:
+            set {au::%uuid of player%::color} to "orange"
+            if {au::picked colors::*} doesn't contain "orange":
+                add "orange" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+        if event-item is light blue wool:
+            set {au::%uuid of player%::color} to "cyan"
+            if {au::picked colors::*} doesn't contain "cyan":
+                add "cyan" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+        if event-item is pink wool:
+            set {au::%uuid of player%::color} to "pink"
+            if {au::picked colors::*} doesn't contain "pink":
+                add "pink" to {au::picked colors::*}
+            close the player's inventory
+            selectColors()
+
+
+
+on inventory click:
+    send index of event-slot
