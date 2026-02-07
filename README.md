@@ -1,2 +1,4 @@
 # AmongUs-Skript
-An AmongUs Plugins, for use with skript
+An AmongUs Plugin, for use with skript
+
+# THIS IS NOT READY FOR USE!
